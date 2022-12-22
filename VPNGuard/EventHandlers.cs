@@ -3,6 +3,7 @@ using LiteNetLib.Utils;
 using PluginAPI.Core;
 using PluginAPI.Core.Attributes;
 using PluginAPI.Enums;
+using PluginAPI.Events;
 using System;
 using System.Threading.Tasks;
 using VPNGuard.API;
@@ -12,10 +13,8 @@ namespace VPNGuard
 {
     public class EventHandlers
     {
-        private static readonly NetDataWriter netDataWriter = new NetDataWriter();
-
         [PluginEvent(ServerEventType.PlayerPreauth)]
-        void OnPlayerPreauth(string userid, string ipAddress, long expiration, CentralAuthPreauthFlags flags, string country, byte[] signature, ConnectionRequest req, Int32 index)
+        PreauthCancellationData OnPlayerPreauth(string userid, string ipAddress, long expiration, CentralAuthPreauthFlags flags, string country, byte[] signature, ConnectionRequest req, Int32 index)
         {
             Plugin.Singleton.VerboseLog($"{userid} from {ipAddress} ({country}) is preauthenticating!");
 
@@ -23,7 +22,7 @@ namespace VPNGuard
             if (flags == CentralAuthPreauthFlags.NorthwoodStaff)
             {
                 Plugin.Singleton.VerboseLog($"{userid} from {ipAddress} ({country}) is Northwood Staff. Bypassing account / VPN checks...");
-                return;
+                return PreauthCancellationData.Accept();
             }
 
             //Let whitelisted users bypass checks.
@@ -31,7 +30,7 @@ namespace VPNGuard
             if (Plugin.UserIds.ContainsKey(userid) && Plugin.UserIds[userid].whitelisted)
             {
                 Plugin.Singleton.VerboseLog($"{userid} from {ipAddress} ({country}) is whitelisted from VPNGuard checks. Bypassing account / VPN checks...");
-                return;
+                return PreauthCancellationData.Accept();
             }
 
             //Perform checks for user USING EXISTING DATA.
@@ -42,14 +41,11 @@ namespace VPNGuard
                 if (Plugin.IPAddresses[ipAddress].Block)
                 {
                     Plugin.Singleton.VerboseLog($"{ipAddress} is already known to be a VPN / proxy. Rejecting connection...");
-
-                    netDataWriter.Reset();
-                    netDataWriter.Put((byte)10);
-                    netDataWriter.Put(Plugin.Singleton.PluginConfig.VpnCheckKickMessage);
-                    req.Reject(netDataWriter);
-                    return;
+                    return PreauthCancellationData.Reject(Plugin.Singleton.PluginConfig.VpnCheckKickMessage, true);
                 }
             }
+
+            return PreauthCancellationData.Accept();
         }
 
 
