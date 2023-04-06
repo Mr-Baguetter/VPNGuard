@@ -23,7 +23,7 @@ namespace VPNGuard
         //Dicrionary containing all UserIDs loaded from file.
         public static Dictionary<string, VPNGuardUserId> UserIds = new Dictionary<string, VPNGuardUserId>();
 
-        [PluginEntryPoint("VPNGuard", "1.0.0.0", "A VPN blocking plugin for SCP: SL servers running NWAPI.", "SomewhatSane#0979")]
+        [PluginEntryPoint("VPNGuard", "1.0.1.0", "A VPN blocking plugin for SCP: SL servers running NWAPI.", "SomewhatSane#0979")]
         private void LoadPlugin()
         {
             Handler = PluginHandler.Get(this);

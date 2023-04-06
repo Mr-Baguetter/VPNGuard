@@ -19,7 +19,7 @@ namespace VPNGuard
             Plugin.Singleton.VerboseLog($"{userid} from {ipAddress} ({country}) is preauthenticating!");
 
             //Let Northwood Staff bypass checks.
-            if (flags == CentralAuthPreauthFlags.NorthwoodStaff)
+            if (flags.HasFlag(CentralAuthPreauthFlags.NorthwoodStaff))
             {
                 Plugin.Singleton.VerboseLog($"{userid} from {ipAddress} ({country}) is Northwood Staff. Bypassing account / VPN checks...");
                 return PreauthCancellationData.Accept();
@@ -55,7 +55,7 @@ namespace VPNGuard
             Plugin.Singleton.VerboseLog($"{player.UserId} from {player.IpAddress} has joined the game.");
 
             //Let Northwood Staff bypass checks.
-            if (player.IsNorthwoodStaff)
+            if (player.IsNorthwoodStaff || player.UserId.EndsWith("@northwood"))
             {
                 Plugin.Singleton.VerboseLog($"{player.UserId} from {player.IpAddress} is Northwood Staff. Bypassing account / VPN checks...");
 
