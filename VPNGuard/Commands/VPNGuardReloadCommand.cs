@@ -1,5 +1,6 @@
 ﻿using System;
 using CommandSystem;
+using EO.WebBrowser;
 
 namespace VPNGuard.Commands
 {
