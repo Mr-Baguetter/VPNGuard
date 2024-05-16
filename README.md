@@ -1,6 +1,5 @@
 # VPNGuard
-A VPN blocking plugin for SCP: SL servers running NWAPI (based on VPNShield-EXILED-Edition).
-
+A VPN blocking plugin for SCP: SL servers running NWAPI
 <h1>Configuration</h1>
 
 ```
